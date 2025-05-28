@@ -29,15 +29,25 @@ void setup() {
 
   lcd_mostrar_mensaje("Bienvenido!", 0);
   delay(2000);
-  lcd_mostrar_mensaje("Esperando RFID", 0);
-  lcd_mostrar_mensaje("mascota...", 1);
+  lcd.clear();
 }
 
 void loop() {
   // Detecta mascota válida
   int id = rfid_leer();
 
-  Serial.print(id);
+  // Serial.print(id);
+  
+  // Gestión del teclado (ajustes)
+  teclado_gestionar(&tiempoDosis, &gramosDosis);
+
+  // Reporte por serial
+  if (Serial.available()) {
+    char c = Serial.read();
+    if (c == 'R' || c == 'r') {
+      mascotas_reporte();
+    }
+  }
 
 
   if (id != -1) {
@@ -62,25 +72,15 @@ void loop() {
     // No detecta mascota válida, muestra mensaje y no temporiza
     mascotaActual = -1;
     lcd.setCursor(0, 0);
-    lcd.print("Mascota no");
+    lcd.print("Esperando");
     lcd.setCursor(0, 1);
-    lcd.print("reconocida");
+    lcd.print("mascota...");
     
     return; // Termina aquí para esperar hasta detectar mascota válida
   }
 
   Serial.print("llego"); //! no llega aquí
 
-  // Gestión del teclado (ajustes)
-  teclado_gestionar(&tiempoDosis, &gramosDosis);
-
-  // Reporte por serial
-  if (Serial.available()) {
-    char c = Serial.read();
-    if (c == 'R' || c == 'r') {
-      mascotas_reporte();
-    }
-  }
 }
 
 // Función para dosificar alimento con LED y actualizar registros

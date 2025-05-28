@@ -11,8 +11,8 @@ char keys[ROWS][COLS] = {
   {'*','0','#','D'}
 };
 
-byte rowPins[ROWS] = {2, 3, 4, 5};
-byte colPins[COLS] = {6, 7, 9, 10};
+byte rowPins[ROWS] = {7, 6, 5, 4}; // R1 a R4
+byte colPins[COLS] = {3, 2, A1, A0}; // C1 a C4
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
 void teclado_init() {}
@@ -22,16 +22,22 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis) {
   static bool editTiempo = false, editGramos = false;
   static int buffer = 0;
 
+  Serial.println(key);
+
   if (key) {
     if (key == 'A') { // Cambiar tiempo
       editTiempo = true;
       buffer = 0;
       lcd_mostrar_mensaje("Nuevo tiempo:", 0);
+      delay(2000);
+      lcd.clear();
     }
     else if (key == 'B') { // Cambiar gramos
       editGramos = true;
       buffer = 0;
       lcd_mostrar_mensaje("Nuevos gramos:", 0);
+      delay(2000);
+      lcd.clear();
     }
     else if (key == 'C') { // RESET
       *tiempoDosis = 15;
@@ -39,8 +45,8 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis) {
       dosificador_guardar_tiempo(*tiempoDosis);
       dosificador_guardar_gramos(*gramosDosis);
       lcd_mostrar_mensaje("Valores RESET", 0);
-      delay(1000);
-      lcd_mostrar_tiempo_restante(*tiempoDosis);
+      delay(2000);
+      lcd.clear();
     }
     else if (isdigit(key)) {
       buffer = buffer * 10 + (key - '0');

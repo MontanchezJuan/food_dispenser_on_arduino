@@ -1,6 +1,7 @@
 #include <Arduino.h>
-#include <SPI.h>
 #include <MFRC522.h>
+#include <SPI.h>
+#include "LcdDisplay.h"
 #include "Mascotas.h"
 
 #define RST_PIN 9
@@ -44,6 +45,11 @@ int rfid_leer() {
       return i;
     }
   }
-  Serial.println("Mascota NO reconocida");
+    lcd.setCursor(0, 0);
+    lcd.print("Mascota no");
+    lcd.setCursor(0, 1);
+    lcd.print("reconocida");
+    delay(2000);
+    lcd.clear();
   return -1;
 }
