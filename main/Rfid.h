@@ -3,5 +3,6 @@
 
 void rfid_init();
 int rfid_leer();
+long rfid_getUltimo();
 
 #endif

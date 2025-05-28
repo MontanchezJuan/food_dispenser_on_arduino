@@ -4,21 +4,38 @@
 #include "LcdDisplay.h"
 
 const byte ROWS = 4, COLS = 4;
-char keys[ROWS][COLS] = {
+char keys_num[ROWS][COLS] = {
   {'1','2','3','A'},
   {'4','5','6','B'},
   {'7','8','9','C'},
   {'*','0','#','D'}
 };
 
+char keys_alpha[ROWS][COLS] = {
+  {'A','B','C','D'},
+  {'E','F','G','H'},
+  {'I','J','K','L'},
+  {'*','M','#','N'}
+};
+
 byte rowPins[ROWS] = {2, 3, 4, 5};
 byte colPins[COLS] = {6, 7, 9, 10};
-Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+
+Keypad keypad_num = Keypad(makeKeymap(keys_num), rowPins, colPins, ROWS, COLS);
+Keypad keypad_alpha = Keypad(makeKeymap(keys_alpha), rowPins, colPins, ROWS, COLS);
 
 void teclado_init() {}
 
+// Devuelve la tecla presionada según el modo
+char teclado_getKey(bool modo_alfabetico) {
+  if (modo_alfabetico)
+    return keypad_alpha.getKey();
+  else
+    return keypad_num.getKey();
+}
+
 void teclado_gestionar(int* tiempoDosis, int* gramosDosis) {
-  char key = keypad.getKey();
+  char key = keypad_num.getKey();
   static bool editTiempo = false, editGramos = false;
   static int buffer = 0;
 
