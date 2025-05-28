@@ -37,6 +37,9 @@ void loop() {
   // Detecta mascota válida
   int id = rfid_leer();
 
+  Serial.print(id);
+
+
   if (id != -1) {
     // Nueva mascota detectada o misma mascota válida
     if (id != mascotaActual) {
@@ -47,31 +50,29 @@ void loop() {
       compuerta_cerrar();
       lcd_mostrar_tiempo_restante(tiempoDosis);
 
-      // Reinicia el temporizador cuando detecta nueva mascota
-      lastDoseTime = millis();
+      enDosificacion = true;
+      dosificar(gramosDosis, mascotaActual);
       enDosificacion = false;
+      mascotaActual = -1;
+      lcd.clear();
+
+      return; // Termina aquí para esperar hasta detectar mascota válida
     }
   } else {
     // No detecta mascota válida, muestra mensaje y no temporiza
-    if (mascotaActual != -1) {
-      mascotaActual = -1;
-      lcd_mostrar_mensaje("Mascota no", 0);
-      lcd_mostrar_mensaje("reconocida", 1);
-    }
+    mascotaActual = -1;
+    lcd.setCursor(0, 0);
+    lcd.print("Mascota no");
+    lcd.setCursor(0, 1);
+    lcd.print("reconocida");
+    
     return; // Termina aquí para esperar hasta detectar mascota válida
   }
 
+  Serial.print("llego"); //! no llega aquí
+
   // Gestión del teclado (ajustes)
   teclado_gestionar(&tiempoDosis, &gramosDosis);
-
-  // Si el tiempo pasó y hay mascota válida, dosifica
-  if (!enDosificacion && millis() - lastDoseTime >= (unsigned long)tiempoDosis * 1000) {
-    enDosificacion = true;
-    dosificar(gramosDosis, mascotaActual);
-    lastDoseTime = millis();
-    enDosificacion = false;
-    lcd_mostrar_tiempo_restante(tiempoDosis);
-  }
 
   // Reporte por serial
   if (Serial.available()) {
@@ -91,7 +92,4 @@ void dosificar(int gramos, int id) {
     mascotas_sumar_gramos(id, 1);
     delay(700);
   }
-  lcd_mostrar_mensaje("Dosis lista!", 1);
-  delay(1200);
-  lcd_mostrar_tiempo_restante(tiempoDosis);
 }

@@ -19,7 +19,7 @@ void dosificador_parpadear_led() {
 
 int dosificador_leer_tiempo() {
   int tiempo = EEPROM.read(EEPROM_TIEMPO);
-  if (tiempo < 10 || tiempo > 30) tiempo = 15;
+  if (tiempo < 10 || tiempo > 30) tiempo = 3;
   return tiempo;
 }
 

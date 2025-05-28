@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "LcdDisplay.h"
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -15,13 +16,17 @@ void lcd_mostrar_mensaje(const char* mensaje, int linea) {
 }
 
 void lcd_mostrar_tiempo_restante(int tiempo) {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Siguiente dosis:");
-  lcd.setCursor(0, 1);
-  lcd.print("en ");
-  lcd.print(tiempo);
-  lcd.print(" seg");
+  for (int t = tiempo; t >= 0; t--) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Siguiente dosis:");
+    lcd.setCursor(0, 1);
+    lcd.print("en ");
+    lcd.print(t);
+    lcd.print(" seg");
+
+    delay(1000);
+  }
 }
 
 void lcd_mostrar_nombre(const char* nombre) {
