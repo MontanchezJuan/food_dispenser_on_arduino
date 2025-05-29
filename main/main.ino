@@ -5,13 +5,13 @@
 #include "Mascotas.h"
 #include "Teclado.h"
 #include "Rfid.h"
-#include "Compuerta.h"
 
 // Variables globales
-unsigned long lastDoseTime = 0;
-int tiempoDosis, gramosDosis;
-bool enDosificacion = false;
+const char* nombreMascotaActual = "Desconocida";
 int mascotaActual = -1;
+int modoTeclado = 0; // 0: normal, 1: editar
+int tiempoDosis, gramosDosis;
+unsigned long lastDoseTime = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -21,15 +21,12 @@ void setup() {
   dosificador_init();
   mascotas_init();
   rfid_init();
-  compuerta_init();
 
   // Leer parámetros desde EEPROM
   tiempoDosis = dosificador_leer_tiempo();
   gramosDosis = dosificador_leer_gramos();
 
-  lcd_mostrar_mensaje("Bienvenido!", 0);
-  delay(2000);
-  lcd.clear();
+  lcd_mostrar_bienvenida();  
 }
 
 void loop() {
@@ -41,28 +38,15 @@ void loop() {
   // Gestión del teclado (ajustes)
   teclado_gestionar(&tiempoDosis, &gramosDosis);
 
-  // Reporte por serial
-  if (Serial.available()) {
-    char c = Serial.read();
-    if (c == 'R' || c == 'r') {
-      mascotas_reporte();
-    }
-  }
-
-
   if (id != -1) {
     // Nueva mascota detectada o misma mascota válida
     if (id != mascotaActual) {
       mascotaActual = id;
-      lcd_mostrar_nombre(mascota_nombre(id));
-      compuerta_abrir();
+      nombreMascotaActual = mascota_nombre(id);
+      lcd_mostrar_nombre(nombreMascotaActual);
       delay(2000);
-      compuerta_cerrar();
-      lcd_mostrar_tiempo_restante(tiempoDosis);
-
-      enDosificacion = true;
+      lcd_mostrar_tiempo_restante(tiempoDosis,nombreMascotaActual);
       dosificar(gramosDosis, mascotaActual);
-      enDosificacion = false;
       mascotaActual = -1;
       lcd.clear();
 
@@ -70,26 +54,12 @@ void loop() {
     }
   } else {
     // No detecta mascota válida, muestra mensaje y no temporiza
-    mascotaActual = -1;
     lcd.setCursor(0, 0);
     lcd.print("Esperando");
     lcd.setCursor(0, 1);
     lcd.print("mascota...");
+    mascotaActual = -1;
     
     return; // Termina aquí para esperar hasta detectar mascota válida
-  }
-
-  Serial.print("llego"); //! no llega aquí
-
-}
-
-// Función para dosificar alimento con LED y actualizar registros
-void dosificar(int gramos, int id) {
-  lcd_mostrar_dosificando(gramos);
-  for (int i = gramos; i > 0; i--) {
-    lcd_mostrar_gramos(i);
-    dosificador_parpadear_led();
-    mascotas_sumar_gramos(id, 1);
-    delay(700);
   }
 }

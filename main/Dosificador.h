@@ -1,6 +1,7 @@
 #ifndef DOSIFICADOR_H
 #define DOSIFICADOR_H
 
+void dosificar(int gramos, int id);
 void dosificador_init();
 void dosificador_parpadear_led();
 int dosificador_leer_tiempo();

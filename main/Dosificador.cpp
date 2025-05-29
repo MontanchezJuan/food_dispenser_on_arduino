@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 #include "Dosificador.h"
+#include "LcdDisplay.h"
+#include "Mascotas.h"
 
 const int LED_PIN = 8;
 const int EEPROM_TIEMPO = 0;
@@ -8,6 +10,16 @@ const int EEPROM_GRAMOS = 2;
 
 void dosificador_init() {
   pinMode(LED_PIN, OUTPUT);
+}
+
+void dosificar(int gramos, int id) {
+  lcd_mostrar_dosificando(gramos);
+  for (int i = gramos; i > 0; i--) {
+    lcd_mostrar_gramos(i);
+    dosificador_parpadear_led();
+    mascotas_sumar_gramos(id, 1);
+    delay(700);
+  }
 }
 
 void dosificador_parpadear_led() {

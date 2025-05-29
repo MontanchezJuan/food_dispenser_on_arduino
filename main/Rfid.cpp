@@ -38,18 +38,19 @@ int rfid_leer() {
 
   unsigned long rfid_id = uid_to_long(mfrc522.uid.uidByte);
 
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < MAX_MASCOTAS; i++) {
     if (rfid_id == lista[i].rfid) {
       Serial.print("Mascota reconocida: ");
       Serial.println(lista[i].nombre);
       return i;
     }
   }
-    lcd.setCursor(0, 0);
-    lcd.print("Mascota no");
-    lcd.setCursor(0, 1);
-    lcd.print("reconocida");
-    delay(2000);
-    lcd.clear();
+
+  lcd.setCursor(0, 0);
+  lcd.print("Mascota no");
+  lcd.setCursor(0, 1);
+  lcd.print("reconocida");
+  delay(2000);
+  lcd.clear();
   return -1;
 }

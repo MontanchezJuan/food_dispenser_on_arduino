@@ -1,7 +1,7 @@
 #ifndef MASCOTAS_H
 #define MASCOTAS_H
 
-#define MAX_MASCOTAS 2
+#define MAX_MASCOTAS 4
 
 typedef struct {
   char nombre[12];

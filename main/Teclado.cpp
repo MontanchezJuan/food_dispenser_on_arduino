@@ -2,6 +2,7 @@
 #include <Keypad.h>
 #include "Dosificador.h"
 #include "LcdDisplay.h"
+#include "Mascotas.h"
 
 const byte ROWS = 4, COLS = 4;
 char keys[ROWS][COLS] = {
@@ -22,6 +23,11 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis) {
   static bool editTiempo = false, editGramos = false;
   static int buffer = 0;
 
+  if (!key)
+  {
+    return; // No hay tecla presionada
+  }
+  
   Serial.println(key);
 
   if (key) {
@@ -39,7 +45,11 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis) {
       delay(2000);
       lcd.clear();
     }
-    else if (key == 'C') { // RESET
+    else if (key == 'C') { // REPORT MASCOTAS
+      mascotas_reporte();
+      lcd.clear();
+    }
+    else if (key == 'D') { // RESET
       *tiempoDosis = 15;
       *gramosDosis = 5;
       dosificador_guardar_tiempo(*tiempoDosis);
@@ -55,7 +65,7 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis) {
         dosificador_guardar_tiempo(buffer);
         lcd_mostrar_mensaje("Tiempo guardado!", 0);
         delay(800);
-        lcd_mostrar_tiempo_restante(*tiempoDosis);
+        // lcd_mostrar_tiempo_restante(*tiempoDosis);
         editTiempo = false; buffer = 0;
       }
       else if (editGramos && buffer >= 1 && buffer <= 10) {
@@ -63,7 +73,7 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis) {
         dosificador_guardar_gramos(buffer);
         lcd_mostrar_mensaje("Gramos guardado!", 0);
         delay(800);
-        lcd_mostrar_tiempo_restante(*tiempoDosis);
+        // lcd_mostrar_tiempo_restante(*tiempoDosis);
         editGramos = false; buffer = 0;
       }
     }

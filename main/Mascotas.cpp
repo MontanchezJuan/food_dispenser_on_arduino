@@ -1,9 +1,10 @@
 #include <Arduino.h>
+#include "LcdDisplay.h"
 #include "Mascotas.h"
 
-Mascota lista[MAX_MASCOTAS] = {
+Mascota lista[MAX_MASCOTAS] = { 
   {"Max", 0xE116C101, 0},
-  {"Luna", 0x0B8FFC03, 0}
+  {"Luna", 0x4922804A, 0}
 };
 
 void mascotas_init() {
@@ -22,11 +23,20 @@ void mascotas_sumar_gramos(int id, int gramos) {
 }
 
 void mascotas_reporte() {
-  Serial.println("Reporte alimento suministrado:");
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Reporte alimento");
+  lcd.setCursor(0, 1);
+  lcd.print("suministrado");
+  delay(3000);
   for (int i = 0; i < MAX_MASCOTAS; i++) {
-    Serial.print(lista[i].nombre);
-    Serial.print(": ");
-    Serial.print(lista[i].gramos_total);
-    Serial.println(" gramos");
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(lista[i].nombre);
+    lcd.setCursor(0, 1);
+    lcd.print("Total: ");
+    lcd.print(lista[i].gramos_total);
+    lcd.print(" g");
+    delay(3000);
   }
 }

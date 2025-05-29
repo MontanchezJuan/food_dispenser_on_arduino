@@ -9,24 +9,34 @@ void lcd_init() {
   lcd.clear();
 }
 
+void lcd_mostrar_bienvenida() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Bienvenido!");
+  delay(2000);
+  lcd.clear();
+}
+
+void lcd_mostrar_dosificando(int gramos) {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Dosificando");
+  lcd.setCursor(0, 1);
+  lcd.print(gramos);
+  lcd.print("g");
+}
+
+void lcd_mostrar_gramos(int gramos) {
+  lcd.setCursor(0, 1);
+  lcd.print("faltan: ");
+  lcd.print(gramos);
+  lcd.print("g");
+}
+
 void lcd_mostrar_mensaje(const char* mensaje, int linea) {
   lcd.clear();
   lcd.setCursor(0, linea);
   lcd.print(mensaje);
-}
-
-void lcd_mostrar_tiempo_restante(int tiempo) {
-  for (int t = tiempo; t >= 0; t--) {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Siguiente dosis:");
-    lcd.setCursor(0, 1);
-    lcd.print("en ");
-    lcd.print(t);
-    lcd.print(" seg");
-
-    delay(1000);
-  }
 }
 
 void lcd_mostrar_nombre(const char* nombre) {
@@ -37,18 +47,17 @@ void lcd_mostrar_nombre(const char* nombre) {
   lcd.print(nombre);
 }
 
-void lcd_mostrar_dosificando(int gramos) {
+void lcd_mostrar_tiempo_restante(int tiempo, char* nombre) {
+  for (int t = tiempo; t > 0; t--) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Dosis: ");
+    lcd.print(nombre);
+    lcd.setCursor(0, 1);
+    lcd.print("en ");
+    lcd.print(t);
+    lcd.print(" seg");
+    delay(1000);
+  }
   lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Dosificando...");
-  lcd.setCursor(0, 1);
-  lcd.print(gramos);
-  lcd.print("g");
-}
-
-void lcd_mostrar_gramos(int gramos) {
-  lcd.setCursor(0, 1);
-  lcd.print("Faltan: ");
-  lcd.print(gramos);
-  lcd.print("g ");
 }
