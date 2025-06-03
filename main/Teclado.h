@@ -3,5 +3,6 @@
 
 void teclado_init();
 void teclado_gestionar(int* tiempoDosis, int* gramosDosis);
+extern bool modoConfig; 
 
 #endif

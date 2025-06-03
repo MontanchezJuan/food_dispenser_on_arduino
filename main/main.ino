@@ -9,7 +9,7 @@
 // Variables globales
 const char* nombreMascotaActual = "Desconocida";
 int mascotaActual = -1;
-int modoTeclado = 0; // 0: normal, 1: editar
+int modoTeclado = 0;  // 0: normal, 1: editar
 int tiempoDosis, gramosDosis;
 unsigned long lastDoseTime = 0;
 
@@ -26,40 +26,52 @@ void setup() {
   tiempoDosis = dosificador_leer_tiempo();
   gramosDosis = dosificador_leer_gramos();
 
-  lcd_mostrar_bienvenida();  
+  lcd_mostrar_bienvenida();
 }
 
 void loop() {
-  // Detecta mascota válida
-  int id = rfid_leer();
+  int id = rfid_leer();  // Leer RFID
+  teclado_gestionar(&tiempoDosis, &gramosDosis);  // Gestión del teclado
 
-  // Serial.print(id);
-  
-  // Gestión del teclado (ajustes)
-  teclado_gestionar(&tiempoDosis, &gramosDosis);
-
-  if (id != -1) {
-    // Nueva mascota detectada o misma mascota válida
-    if (id != mascotaActual) {
+  if (modoConfig) {
+    if (id != -1 && id != mascotaActual) {
       mascotaActual = id;
       nombreMascotaActual = mascota_nombre(id);
-      lcd_mostrar_nombre(nombreMascotaActual);
-      delay(2000);
-      lcd_mostrar_tiempo_restante(tiempoDosis,nombreMascotaActual);
-      dosificar(gramosDosis, mascotaActual);
-      mascotaActual = -1;
-      lcd.clear();
 
-      return; // Termina aquí para esperar hasta detectar mascota válida
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Configurando a:");
+      lcd.setCursor(0, 1);
+      lcd.print(nombreMascotaActual);
+    } else if (id == -1 && mascotaActual == -1) {
+      // Solo mostrar "Esperando gato" si aún no se ha pasado una mascota válida
+      lcd.setCursor(0, 0);
+      lcd.print("Modo Config");
+      lcd.setCursor(0, 1);
+      lcd.print("Esperando gato...");
     }
-  } else {
-    // No detecta mascota válida, muestra mensaje y no temporiza
-    lcd.setCursor(0, 0);
-    lcd.print("Esperando");
-    lcd.setCursor(0, 1);
-    lcd.print("mascota...");
+    return;  // Se mantiene en modo configuración
+  }
+
+  // --- MODO NORMAL ---
+  if (id != -1 && id != mascotaActual) {
+    mascotaActual = id;
+    nombreMascotaActual = mascota_nombre(id);
+
+    lcd_mostrar_nombre(nombreMascotaActual);
+    delay(2000);
+    lcd_mostrar_tiempo_restante(tiempoDosis, nombreMascotaActual);
+    dosificar(gramosDosis, mascotaActual);
     mascotaActual = -1;
-    
-    return; // Termina aquí para esperar hasta detectar mascota válida
+    lcd.clear();
+    return;
+  } else {
+    lcd.setCursor(0, 0);
+    lcd.print("Esperando       ");
+    lcd.setCursor(0, 1);
+    lcd.print("mascota...      ");
+    mascotaActual = -1;
+    return;
   }
 }
+
