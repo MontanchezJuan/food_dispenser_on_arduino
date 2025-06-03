@@ -31,7 +31,7 @@ void setup() {
 
 void loop() {
   int id = rfid_leer();  // Leer RFID
-  teclado_gestionar(&tiempoDosis, &gramosDosis);  // Gestión del teclado
+  teclado_gestionar(&tiempoDosis, &gramosDosis, nombreMascotaActual);  // Gestión del teclado
 
   if (modoConfig) {
     if (id != -1 && id != mascotaActual) {
@@ -46,9 +46,9 @@ void loop() {
     } else if (id == -1 && mascotaActual == -1) {
       // Solo mostrar "Esperando gato" si aún no se ha pasado una mascota válida
       lcd.setCursor(0, 0);
-      lcd.print("Modo Config");
+      lcd.print("Esperando");
       lcd.setCursor(0, 1);
-      lcd.print("Esperando gato...");
+      lcd.print("Mascota...");
     }
     return;  // Se mantiene en modo configuración
   }

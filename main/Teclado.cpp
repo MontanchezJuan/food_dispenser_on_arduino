@@ -19,7 +19,7 @@ bool modoConfig = false;
 
 void teclado_init() {}
 
-void teclado_gestionar(int* tiempoDosis, int* gramosDosis) {
+void teclado_gestionar(int* tiempoDosis, int* gramosDosis, const char* nombreMascotaActual) {
   char key = keypad.getKey();
   static bool editTiempo = false, editGramos = false;
   static int buffer = 0;
@@ -31,19 +31,7 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis) {
   Serial.println(key);
 
   if (key) {
-    if (key == 'A' && modoConfig) {  // Cambiar tiempo
-      editTiempo = true;
-      buffer = 0;
-      lcd_mostrar_mensaje("Nuevo tiempo:", 0);
-      delay(2000);
-      lcd.clear();
-    } else if (key == 'B' && modoConfig) {  // Cambiar gramos
-      editGramos = true;
-      buffer = 0;
-      lcd_mostrar_mensaje("Nuevos gramos:", 0);
-      delay(2000);
-      lcd.clear();
-    } else if (key == 'C') {  // REPORT MASCOTAS
+    if (key == 'C') {  // REPORT MASCOTAS
       mascotas_reporte();
       lcd.clear();
     } else if (key == 'D' && modoConfig) {  // RESET
@@ -52,34 +40,44 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis) {
       dosificador_guardar_tiempo(*tiempoDosis);
       dosificador_guardar_gramos(*gramosDosis);
       lcd_mostrar_mensaje("Valores RESET", 0);
-      delay(2000);
+      delay(3000);
+      lcd_mostrar_config(nombreMascotaActual);
+    } else if (key == 'A' && modoConfig){
       lcd.clear();
-    } else if (isdigit(key)) {
+      lcd.setCursor(0, 0);
+      lcd.print("Nuevo tiempo:"); 
+      lcd.setCursor(0,1);
+      lcd.print(buffer);
+      lcd.print(" Segundos");
+      delay(3000);
+      buffer = 0; 
+      lcd_mostrar_config(nombreMascotaActual);
+    } else if (key == 'B' && modoConfig){
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Nuevos gramos:"); 
+      lcd.setCursor(0,1);
+      lcd.print(buffer);
+      lcd.print(" Gramos");
+      delay(3000); 
+      buffer = 0;
+      lcd_mostrar_config(nombreMascotaActual);
+    } else if (isdigit(key) && modoConfig) {
       buffer = buffer * 10 + (key - '0');
-      if (editTiempo && buffer >= 10 && buffer <= 30) {
-        *tiempoDosis = buffer;
-        dosificador_guardar_tiempo(buffer);
-        lcd_mostrar_mensaje("Tiempo guardado!", 0);
-        delay(800);
-        // lcd_mostrar_tiempo_restante(*tiempoDosis);
-        editTiempo = false;
-        buffer = 0;
-      } else if (editGramos && buffer >= 1 && buffer <= 10) {
-        *gramosDosis = buffer;
-        dosificador_guardar_gramos(buffer);
-        lcd_mostrar_mensaje("Gramos guardado!", 0);
-        delay(800);
-        // lcd_mostrar_tiempo_restante(*tiempoDosis);
-        editGramos = false;
-        buffer = 0;
-      }
-    } else if (key == '*' && !modoConfig) {  //Entra a modo configuracion
-      modoConfig = true; 
       lcd.clear();
-    } else if (key == '*' && modoConfig){
-      modoConfig = false;
+      lcd.setCursor(0, 0);
+      lcd.print(buffer);
+    } else if (key == '*') {  //Entra a modo configuracion
+      modoConfig = !modoConfig;
+      if (modoConfig){
+        lcd_mostrar_mensaje("Modo Config ON", 0);
+        delay(3000);
+      } else {
+        lcd_mostrar_mensaje("Modo Config OFF", 0);
+        delay(3000);
+      }; 
+      buffer = 0;
       lcd.clear();
     }
   }
 }
-

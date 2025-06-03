@@ -11,5 +11,6 @@ void lcd_mostrar_gramos(int gramos);
 void lcd_mostrar_mensaje(const char* mensaje, int linea);
 void lcd_mostrar_nombre(const char* nombre);
 void lcd_mostrar_tiempo_restante(int tiempo, char* nombre);
+void lcd_mostrar_config(const char* nombreMascota);
 
 #endif
