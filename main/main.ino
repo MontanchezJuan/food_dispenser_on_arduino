@@ -60,8 +60,8 @@ void loop() {
 
     lcd_mostrar_nombre(nombreMascotaActual);
     delay(2000);
-    lcd_mostrar_tiempo_restante(tiempoDosis, nombreMascotaActual);
     dosificar(gramosDosis, mascotaActual);
+    lcd_mostrar_tiempo_restante(tiempoDosis, nombreMascotaActual);
     mascotaActual = -1;
     lcd.clear();
     return;
