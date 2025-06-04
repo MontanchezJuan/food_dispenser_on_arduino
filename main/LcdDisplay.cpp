@@ -61,3 +61,12 @@ void lcd_mostrar_tiempo_restante(int tiempo, char* nombre) {
   }
   lcd.clear();
 }
+
+
+void lcd_mostrar_config(const char* nombreMascota) {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Configurando a:");
+  lcd.setCursor(0, 1);
+  lcd.print(nombreMascota);
+}
