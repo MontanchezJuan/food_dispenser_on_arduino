@@ -3,8 +3,8 @@
 #include "Mascotas.h"
 
 Mascota lista[MAX_MASCOTAS] = { 
-  {"Max", 0xE116C101, 0},
-  {"Luna", 0x4922804A, 0}
+  {"Max", 0xE116C101, 0, 10, 7},
+  {"Luna", 0x4922804A, 0, 20, 5}
 };
 
 void mascotas_init() {

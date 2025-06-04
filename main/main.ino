@@ -9,7 +9,6 @@
 // Variables globales
 const char* nombreMascotaActual = "Desconocida";
 int mascotaActual = -1;
-int modoTeclado = 0; // 0: normal, 1: editar
 int tiempoDosis, gramosDosis;
 unsigned long lastDoseTime = 0;
 
@@ -45,8 +44,8 @@ void loop() {
       nombreMascotaActual = mascota_nombre(id);
       lcd_mostrar_nombre(nombreMascotaActual);
       delay(2000);
-      lcd_mostrar_tiempo_restante(tiempoDosis,nombreMascotaActual);
       dosificar(gramosDosis, mascotaActual);
+      lcd_mostrar_tiempo_restante(tiempoDosis - gramosDosis, nombreMascotaActual);
       mascotaActual = -1;
       lcd.clear();
 

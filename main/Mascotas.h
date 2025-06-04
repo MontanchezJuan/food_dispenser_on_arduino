@@ -7,6 +7,8 @@ typedef struct {
   char nombre[12];
   unsigned long rfid;
   int gramos_total;
+  int tiempo_espera;
+  int gramos_dosis;
 } Mascota;
 
 extern Mascota lista[MAX_MASCOTAS];
