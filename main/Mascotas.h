@@ -17,5 +17,9 @@ void mascotas_init();
 const char* mascota_nombre(int id);
 void mascotas_sumar_gramos(int id, int gramos);
 void mascotas_reporte();
+void set_gramos_por_nombre(const char* nombre, int gramos);
+void set_tiempo_por_nombre(const char* nombre, int tiempo);
+int get_tiempo(int id);
+int get_gramos(int id);
 
 #endif

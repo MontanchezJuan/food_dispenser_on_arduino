@@ -3,6 +3,7 @@
 #include <SPI.h>
 #include "LcdDisplay.h"
 #include "Mascotas.h"
+#include "Teclado.h"
 
 #define RST_PIN 9
 #define SS_PIN 10
@@ -46,6 +47,7 @@ int rfid_leer() {
     }
   }
 
+  lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Mascota no");
   lcd.setCursor(0, 1);

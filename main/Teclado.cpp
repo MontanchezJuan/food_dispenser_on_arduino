@@ -35,30 +35,42 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis, const char* nombreMas
       mascotas_reporte();
       lcd.clear();
     } else if (key == 'D' && modoConfig) {  // RESET
-      *tiempoDosis = 15;
-      *gramosDosis = 5;
-      dosificador_guardar_tiempo(*tiempoDosis);
-      dosificador_guardar_gramos(*gramosDosis);
+      set_gramos_por_nombre(nombreMascotaActual, 5);
+      set_tiempo_por_nombre(nombreMascotaActual, 15);
+      // *tiempoDosis = 15;
+      // *gramosDosis = 5;
+      // dosificador_guardar_tiempo(*tiempoDosis);
+      // dosificador_guardar_gramos(*gramosDosis);
       lcd_mostrar_mensaje("Valores RESET", 0);
       delay(3000);
       lcd_mostrar_config(nombreMascotaActual);
     } else if (key == 'A' && modoConfig){
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Nuevo tiempo:"); 
-      lcd.setCursor(0,1);
-      lcd.print(buffer);
-      lcd.print(" Segundos");
+      if (buffer < 10 || buffer > 30) {
+        lcd_mostrar_mensaje("Tiempo invalido", 0);
+      } else {
+        set_tiempo_por_nombre(nombreMascotaActual, buffer);
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Nuevo tiempo:"); 
+        lcd.setCursor(0,1);
+        lcd.print(buffer);
+        lcd.print(" Segundos");
+      }
       delay(3000);
       buffer = 0; 
       lcd_mostrar_config(nombreMascotaActual);
     } else if (key == 'B' && modoConfig){
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Nuevos gramos:"); 
-      lcd.setCursor(0,1);
-      lcd.print(buffer);
-      lcd.print(" Gramos");
+      if (buffer < 1 || buffer > 10) {
+        lcd_mostrar_mensaje("Gramos invalido", 0);
+      } else {
+        set_gramos_por_nombre(nombreMascotaActual, buffer);
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Nuevos gramos:"); 
+        lcd.setCursor(0,1);
+        lcd.print(buffer);
+        lcd.print(" Gramos");
+      }
       delay(3000); 
       buffer = 0;
       lcd_mostrar_config(nombreMascotaActual);

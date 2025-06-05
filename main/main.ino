@@ -57,11 +57,13 @@ void loop() {
   if (id != -1 && id != mascotaActual) {
     mascotaActual = id;
     nombreMascotaActual = mascota_nombre(id);
+    gramosDosis = get_gramos(mascotaActual);
+    tiempoDosis = get_tiempo(mascotaActual);
 
     lcd_mostrar_nombre(nombreMascotaActual);
     delay(2000);
-    dosificar(gramosDosis, mascotaActual);
     lcd_mostrar_tiempo_restante(tiempoDosis, nombreMascotaActual);
+    dosificar(gramosDosis, mascotaActual);
     mascotaActual = -1;
     lcd.clear();
     return;
