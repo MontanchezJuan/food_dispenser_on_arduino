@@ -34,13 +34,14 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis, const char* nombreMas
     if (key == 'C') {  // REPORT MASCOTAS
       mascotas_reporte();
       lcd.clear();
+      lcd_mostrar_config(nombreMascotaActual);
     } else if (key == 'D' && modoConfig) {  // RESET
       set_gramos_por_nombre(nombreMascotaActual, 5);
       set_tiempo_por_nombre(nombreMascotaActual, 15);
       // *tiempoDosis = 15;
       // *gramosDosis = 5;
-      // dosificador_guardar_tiempo(*tiempoDosis);
-      // dosificador_guardar_gramos(*gramosDosis);
+      dosificador_guardar_tiempo(15);
+      dosificador_guardar_gramos(5);
       lcd_mostrar_mensaje("Valores RESET", 0);
       delay(3000);
       lcd_mostrar_config(nombreMascotaActual);

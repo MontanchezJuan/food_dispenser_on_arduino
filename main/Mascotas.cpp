@@ -29,7 +29,11 @@ void mascotas_reporte() {
   lcd.setCursor(0, 1);
   lcd.print("suministrado");
   delay(3000);
+
   for (int i = 0; i < MAX_MASCOTAS; i++) {
+    // Si la mascota no tiene nombre, salimos del bucle
+    if (lista[i].nombre[0] == '\0') break;
+
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(lista[i].nombre);
@@ -39,7 +43,13 @@ void mascotas_reporte() {
     lcd.print(" g");
     delay(3000);
   }
+
+  lcd.clear();
+  lcd.print("Fin reporte");
+  delay(2000);
+  lcd.clear();
 }
+
 
 void set_tiempo_por_nombre(const char* nombre, int tiempo) {
   for (int i = 0; i < MAX_MASCOTAS; i++) {

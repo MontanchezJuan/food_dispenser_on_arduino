@@ -31,7 +31,8 @@ void dosificador_parpadear_led() {
 
 int dosificador_leer_tiempo() {
   int tiempo = EEPROM.read(EEPROM_TIEMPO);
-  if (tiempo < 10 || tiempo > 30) tiempo = 3;
+  if (tiempo < 10 || tiempo > 30) tiempo = 15;
+  EEPROM.write(EEPROM_TIEMPO, tiempo);
   return tiempo;
 }
 
@@ -42,6 +43,7 @@ void dosificador_guardar_tiempo(int tiempo) {
 int dosificador_leer_gramos() {
   int gramos = EEPROM.read(EEPROM_GRAMOS);
   if (gramos < 1 || gramos > 10) gramos = 5;
+  EEPROM.write(EEPROM_GRAMOS, gramos);
   return gramos;
 }
 
