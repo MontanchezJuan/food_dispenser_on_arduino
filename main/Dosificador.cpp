@@ -47,11 +47,6 @@ int dosificador_leer_gramos() {
   return gramos;
 }
 
-// Eprom para guardar tiempo de espera para cada dosis
-void dosificador_guardar_tiempo_dosis(int tiempo) {
-  EEPROM.write(EEPROM_TIEMPO, tiempo);
-}
-
 void dosificador_guardar_gramos(int gramos) {
   EEPROM.write(EEPROM_GRAMOS, gramos);
 }

@@ -62,7 +62,6 @@ void lcd_mostrar_tiempo_restante(int tiempo, char* nombre) {
   lcd.clear();
 }
 
-
 void lcd_mostrar_config(const char* nombreMascota) {
   lcd.clear();
   lcd.setCursor(0, 0);

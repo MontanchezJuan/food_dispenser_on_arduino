@@ -50,7 +50,6 @@ void mascotas_reporte() {
   lcd.clear();
 }
 
-
 void set_tiempo_por_nombre(const char* nombre, int tiempo) {
   for (int i = 0; i < MAX_MASCOTAS; i++) {
     if (strcmp(lista[i].nombre, nombre) == 0) {

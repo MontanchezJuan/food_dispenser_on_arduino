@@ -28,7 +28,7 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis, const char* nombreMas
     return;  // No hay tecla presionada
   }
 
-  Serial.println(key);
+  Serial.println(key); //! Comentar en producción
 
   if (key) {
     if (key == 'C') {  // REPORT MASCOTAS
