@@ -24,13 +24,13 @@ int rfid_leer() {
   if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial())
     return -1;
 
-  Serial.print("RFID Detectado: ");
-  for (byte i = 0; i < mfrc522.uid.size; i++) {
-    if (mfrc522.uid.uidByte[i] < 0x10) Serial.print("0");
-    Serial.print(mfrc522.uid.uidByte[i], HEX);
-    Serial.print(" ");
-  }
-  Serial.println();
+  // Serial.print("RFID Detectado: ");
+  // for (byte i = 0; i < mfrc522.uid.size; i++) {
+  //   if (mfrc522.uid.uidByte[i] < 0x10) Serial.print("0");
+  //   Serial.print(mfrc522.uid.uidByte[i], HEX);
+  //   Serial.print(" ");
+  // }
+  // Serial.println();
 
   if (mfrc522.uid.size != 4) {
     Serial.println("UID no tiene 4 bytes, ignorado");

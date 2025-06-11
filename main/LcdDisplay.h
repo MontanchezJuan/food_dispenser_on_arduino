@@ -6,11 +6,8 @@ extern LiquidCrystal_I2C lcd;
 
 void lcd_init();
 void lcd_mostrar_bienvenida();
-void lcd_mostrar_dosificando(int gramos);
-void lcd_mostrar_gramos(int gramos);
-void lcd_mostrar_mensaje(const char* mensaje, int linea);
-void lcd_mostrar_nombre(const char* nombre);
-void lcd_mostrar_tiempo_restante(int tiempo, char* nombre);
+void lcd_mostrar_comiendo_mascota(const char* nombre);
 void lcd_mostrar_config(const char* nombreMascota);
+void lcd_mostrar_mensaje(const char* mensaje, int linea);
 
 #endif

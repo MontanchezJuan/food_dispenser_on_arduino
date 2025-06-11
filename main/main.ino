@@ -8,10 +8,7 @@
 
 // Variables globales
 const char* nombreMascotaActual = "Desconocida";
-int mascotaActual = -1;
-int modoTeclado = 0;  // 0: normal, 1: editar
 int tiempoDosis, gramosDosis;
-unsigned long lastDoseTime = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -22,20 +19,17 @@ void setup() {
   mascotas_init();
   rfid_init();
 
-  // Leer parámetros desde EEPROM
-  tiempoDosis = dosificador_leer_tiempo();
-  gramosDosis = dosificador_leer_gramos();
-
   lcd_mostrar_bienvenida();
+  dosificar_initial();
 }
 
 void loop() {
-  int id = rfid_leer();
-  teclado_gestionar(&tiempoDosis, &gramosDosis, nombreMascotaActual);  // Gestión del teclado
+  long id = rfid_leer();
+  teclado_gestionar(id, nombreMascotaActual);  // Gestión del teclado
+  dosificar();
 
   if (modoConfig) {
-    if (id != -1 && id != mascotaActual) {
-      mascotaActual = id;
+    if (id != -1) {
       nombreMascotaActual = mascota_nombre(id);
 
       lcd.clear();
@@ -43,10 +37,10 @@ void loop() {
       lcd.print("Configurando a:");
       lcd.setCursor(0, 1);
       lcd.print(nombreMascotaActual);
-    } else if (id == -1 && mascotaActual == -1) {
+    } else {
       // Solo mostrar "Esperando Mascota" si aún no se ha pasado una mascota válida
       lcd.setCursor(0, 0);
-      lcd.print("Esperando       ");
+      lcd.print("Esperando      *"); // *: para diferenciar el modo esperando config del normal
       lcd.setCursor(0, 1);
       lcd.print("mascota...      ");
     }
@@ -54,25 +48,64 @@ void loop() {
   }
 
   // --- MODO NORMAL ---
-  if (id != -1 && id != mascotaActual) {
-    mascotaActual = id;
-    nombreMascotaActual = mascota_nombre(id);
-    gramosDosis = get_gramos(mascotaActual);
-    tiempoDosis = get_tiempo(mascotaActual);
+  if (id != -1) {
+    Mascota* m = get_mascota(id);
+    if (m != NULL) {
+      nombreMascotaActual = m->nombre;
+      gramosDosis = m->gramos_dosis;
+      tiempoDosis = m->tiempo_espera;
+      bool hay_comida = m->hay_comida;
+      if (hay_comida == true) {
+        long loopID = id;
+        while (loopID == id)
+        {
+          lcd_mostrar_comiendo_mascota(nombreMascotaActual);
+          delay(2000);
+          loopID = rfid_leer();
+        }
+        
+        set_hay_comida(id, false);
+        set_siguiente_dosis_en(id, tiempoDosis);
+        set_gramos_faltantes(id, gramosDosis);
+        mascotas_sumar_gramos(id);
 
-    lcd_mostrar_nombre(nombreMascotaActual);
-    delay(2000);
-    lcd_mostrar_tiempo_restante(tiempoDosis, nombreMascotaActual);
-    dosificar(gramosDosis, mascotaActual);
-    mascotaActual = -1;
-    lcd.clear();
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Bye");
+        lcd.setCursor(0, 1);
+        lcd.print(nombreMascotaActual);
+        delay(1000);
+        return;
+      } else {
+        int siguiente_dosis_en = lista[id].siguiente_dosis_en;
+        if (siguiente_dosis_en != 0)
+        {
+          lcd.clear();
+          lcd.setCursor(0, 0);
+          lcd.print(nombreMascotaActual);
+          lcd.setCursor(0, 1);
+          lcd.print("aun faltan: ");
+          lcd.print(siguiente_dosis_en);
+          delay(1000);
+          return;
+        }
+        
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print(nombreMascotaActual);
+        lcd.setCursor(0, 1);
+        lcd.print("espera un poco");
+        delay(1000);
+        return;
+      }
+    }
     return;
   } else {
     lcd.setCursor(0, 0);
     lcd.print("Esperando       ");
     lcd.setCursor(0, 1);
     lcd.print("mascota...      ");
-    mascotaActual = -1;
+    delay(1000);
     return;
   }
 }

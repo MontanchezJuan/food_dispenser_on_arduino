@@ -19,7 +19,7 @@ bool modoConfig = false;
 
 void teclado_init() {}
 
-void teclado_gestionar(int* tiempoDosis, int* gramosDosis, const char* nombreMascotaActual) {
+void teclado_gestionar(long id, const char* nombreMascotaActual) {
   char key = keypad.getKey();
   static bool editTiempo = false, editGramos = false;
   static int buffer = 0;
@@ -36,14 +36,41 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis, const char* nombreMas
       lcd.clear();
       lcd_mostrar_config(nombreMascotaActual);
     } else if (key == 'D' && modoConfig) {  // RESET
-      set_gramos_por_nombre(nombreMascotaActual, 5);
-      set_tiempo_por_nombre(nombreMascotaActual, 15);
-      // *tiempoDosis = 15;
-      // *gramosDosis = 5;
-      dosificador_guardar_tiempo(15);
-      dosificador_guardar_gramos(5);
-      lcd_mostrar_mensaje("Valores RESET", 0);
-      delay(3000);
+      int tiempo = dosificador_leer_tiempo();
+      int gramos = dosificador_leer_gramos();
+      set_gramos_por_nombre(nombreMascotaActual, gramos);
+      set_tiempo_por_nombre(nombreMascotaActual, tiempo);
+
+      // dosificador_guardar_tiempo(15);
+      // dosificador_guardar_gramos(5);
+      lcd.clear();
+      lcd.setCursor(0,1);
+      lcd.print("Valores RESET"); 
+      delay(1000);
+
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Valores RESET"); 
+      lcd.setCursor(0,1);
+      lcd.print("Tiempo:");
+      lcd.print(tiempo);
+      delay(1000);
+
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Tiempo:");
+      lcd.print(tiempo);
+      lcd.setCursor(0,1);
+      lcd.print("Gramos:");
+      lcd.print(gramos);
+      delay(1000);
+
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Gramos:");
+      lcd.print(gramos);
+      delay(1000);
+
       lcd_mostrar_config(nombreMascotaActual);
     } else if (key == 'A' && modoConfig){
       if (buffer < 10 || buffer > 30) {
@@ -80,6 +107,51 @@ void teclado_gestionar(int* tiempoDosis, int* gramosDosis, const char* nombreMas
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print(buffer);
+    } else if (key == '#') {  // Mascota comelona gorda obesa
+      int id = mascota_con_mas_gramos_total();
+      Mascota* m = get_mascota(id);
+      if (m != NULL) {
+        const char* nombreMascota = m->nombre;
+        int gramos_total = m->gramos_total;
+        lcd.clear();
+        lcd.setCursor(0,1);
+        lcd.print("Mascota mas"); 
+        delay(1000);
+
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Mascota mas"); 
+        lcd.setCursor(0,1);
+        lcd.print("gorda del mes:");
+        delay(1000);
+
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("gorda del mes:");
+        lcd.setCursor(0,1);
+        lcd.print(nombreMascota);
+        delay(1000);
+
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print(nombreMascota);
+        lcd.setCursor(0,1);
+        lcd.print("gramos totales:");
+        delay(1000);
+
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("gramos totales:");
+        lcd.setCursor(0,1);
+        lcd.print(gramos_total);
+        delay(1000);
+
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print(gramos_total);
+        delay(1000);
+        lcd_mostrar_config(nombreMascotaActual);
+      }
     } else if (key == '*') {  //Entra a modo configuracion
       modoConfig = !modoConfig;
       if (modoConfig){

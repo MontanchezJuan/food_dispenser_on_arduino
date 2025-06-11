@@ -2,7 +2,7 @@
 #define TECLADO_H
 
 void teclado_init();
-void teclado_gestionar(int* tiempoDosis, int* gramosDosis, const char* nombreMascotaActual);
+void teclado_gestionar(long id, const char* nombreMascotaActual);
 extern bool modoConfig; 
 
 #endif

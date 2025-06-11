@@ -13,24 +13,8 @@ void lcd_mostrar_bienvenida() {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Bienvenido!");
-  delay(2000);
+  delay(1000);
   lcd.clear();
-}
-
-void lcd_mostrar_dosificando(int gramos) {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Dosificando");
-  lcd.setCursor(0, 1);
-  lcd.print(gramos);
-  lcd.print("g");
-}
-
-void lcd_mostrar_gramos(int gramos) {
-  lcd.setCursor(0, 1);
-  lcd.print("faltan: ");
-  lcd.print(gramos);
-  lcd.print("g");
 }
 
 void lcd_mostrar_mensaje(const char* mensaje, int linea) {
@@ -39,27 +23,12 @@ void lcd_mostrar_mensaje(const char* mensaje, int linea) {
   lcd.print(mensaje);
 }
 
-void lcd_mostrar_nombre(const char* nombre) {
+void lcd_mostrar_comiendo_mascota(const char* nombre) {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Mascota:");
-  lcd.setCursor(0, 1);
   lcd.print(nombre);
-}
-
-void lcd_mostrar_tiempo_restante(int tiempo, char* nombre) {
-  for (int t = tiempo; t > 0; t--) {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Dosis: ");
-    lcd.print(nombre);
-    lcd.setCursor(0, 1);
-    lcd.print("en ");
-    lcd.print(t);
-    lcd.print(" seg");
-    delay(1000);
-  }
-  lcd.clear();
+  lcd.setCursor(0, 1);
+  lcd.print("comiendo...");
 }
 
 void lcd_mostrar_config(const char* nombreMascota) {
