@@ -9,6 +9,7 @@
 // Variables globales
 const char* nombreMascotaActual = "Desconocida";
 int tiempoDosis, gramosDosis;
+int mascotaActual = -1;
 
 void setup() {
   Serial.begin(9600);
@@ -29,7 +30,8 @@ void loop() {
   dosificar();
 
   if (modoConfig) {
-    if (id != -1) {
+    if (id != -1 && id != mascotaActual) {
+      mascotaActual = id;
       nombreMascotaActual = mascota_nombre(id);
 
       lcd.clear();
@@ -37,7 +39,7 @@ void loop() {
       lcd.print("Configurando a:");
       lcd.setCursor(0, 1);
       lcd.print(nombreMascotaActual);
-    } else {
+    } else if (id == -1 && mascotaActual == -1) {
       // Solo mostrar "Esperando Mascota" si aún no se ha pasado una mascota válida
       lcd.setCursor(0, 0);
       lcd.print("Esperando      *"); // *: para diferenciar el modo esperando config del normal
@@ -48,7 +50,8 @@ void loop() {
   }
 
   // --- MODO NORMAL ---
-  if (id != -1) {
+  if (id != -1 && id != mascotaActual) {
+    mascotaActual = id;
     Mascota* m = get_mascota(id);
     if (m != NULL) {
       nombreMascotaActual = m->nombre;
@@ -75,7 +78,6 @@ void loop() {
         lcd.setCursor(0, 1);
         lcd.print(nombreMascotaActual);
         delay(1000);
-        return;
       } else {
         int siguiente_dosis_en = lista[id].siguiente_dosis_en;
         if (siguiente_dosis_en != 0)
@@ -87,18 +89,16 @@ void loop() {
           lcd.print("aun faltan: ");
           lcd.print(siguiente_dosis_en);
           delay(1000);
-          return;
         }
-        
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print(nombreMascotaActual);
         lcd.setCursor(0, 1);
         lcd.print("espera un poco");
         delay(1000);
-        return;
       }
     }
+    mascotaActual = -1;
     return;
   } else {
     lcd.setCursor(0, 0);
@@ -106,6 +106,7 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print("mascota...      ");
     delay(1000);
+    mascotaActual = -1;
     return;
   }
 }
